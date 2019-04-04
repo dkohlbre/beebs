@@ -48,6 +48,28 @@
 #define Var(name, value)				__typeof__(value) name = value
 #define Allocate(type, count)				(type *)malloc((count) * sizeof(type))
 
+/* The BEEBS version of this code uses its own version of rand, to
+   avoid library/architecture variation. */
+
+/* Yield a sequence of random numbers in the range [0, 2^31-1].
+
+   The seed is always initialized to zero.  long int is guaranteed to be at
+   least 32 bits. The seed only ever uses 31 bits (so is positive).
+
+   For BEEBS this gets round different operating systems using different
+   multipliers and offsets and RAND_MAX variations. */
+
+static long int
+rand_beebs ()
+{
+  static long int seed = 0;
+
+  seed = (seed * 16807 + 0) & ((1U << 31) - 1);
+  return seed;
+
+}
+
+
 long Min(const long a, const long b) {
 	if (a < b) return a;
 	return b;
@@ -653,15 +675,15 @@ long TestingPathological(long index, long total) {
 }
 
 long TestingRandom(long index, long total) {
-	return rand();
+	return rand_beebs();
 }
 
 long TestingMostlyDescending(long index, long total) {
-	return total - index + rand() * 1.0/RAND_MAX * 5 - 2.5;
+	return total - index + rand_beebs() * 1.0/RAND_MAX * 5 - 2.5;
 }
 
 long TestingMostlyAscending(long index, long total) {
-	return index + rand() * 1.0/RAND_MAX * 5 - 2.5;
+	return index + rand_beebs() * 1.0/RAND_MAX * 5 - 2.5;
 }
 
 long TestingAscending(long index, long total) {
@@ -677,11 +699,11 @@ long TestingEqual(long index, long total) {
 }
 
 long TestingJittered(long index, long total) {
-	return (rand() * 1.0/RAND_MAX <= 0.9) ? index : (index - 2);
+	return (rand_beebs() * 1.0/RAND_MAX <= 0.9) ? index : (index - 2);
 }
 
 long TestingMostlyEqual(long index, long total) {
-	return 1000 + rand() * 1.0/RAND_MAX * 4;
+	return 1000 + rand_beebs() * 1.0/RAND_MAX * 4;
 }
 
 
