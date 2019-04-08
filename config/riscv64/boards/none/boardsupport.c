@@ -19,16 +19,21 @@
 
 #include <support.h>
 
+unsigned long cycles1;
+
 void initialise_board()
 {
 }
 
 void start_trigger()
 {
+    asm volatile ("rdcycle %0" : "=r" (cycles1));
+
 }
 
 void stop_trigger()
 {
+  unsigned long cycles2;
+  asm volatile ("rdcycle %0" : "=r" (cycles2));
+  printf("Runtime: %ul cycles\r\n", cycles2-cycles1);
 }
-
-
