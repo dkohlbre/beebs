@@ -35,5 +35,5 @@ void stop_trigger()
 {
   unsigned long cycles2;
   asm volatile ("rdcycle %0" : "=r" (cycles2));
-  printf("Runtime: %ul cycles\r\n", cycles2-cycles1);
+  printf("Runtime: %lu cycles\r\n", cycles2-cycles1);
 }
