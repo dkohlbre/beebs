@@ -2,7 +2,8 @@
 
 # Output logs
 
-set -e
+#Can't set -e here, some tests 'fail' (see crc32's strange compare)
+#set -e
 
 for tst in bin/*; do
     tst=$(basename $tst)
