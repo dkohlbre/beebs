@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $TEST_CONFIG
+
 for tst in bin/*; do
     tst=$(basename $tst)
     TEST_LOG_FILE=${TEST_LOG_DIR}/BASE_${tst}.log
@@ -11,9 +13,12 @@ for tst in bin/*; do
         BASE_LOG_FILE=${TEST_LOG_DIR}/base_${tst}_${RUN_N}.log
         KEYSTONE_LOG_FILE=${TEST_LOG_DIR}/keystone_${tst}_${RUN_N}.log
 
-        cat ${BASE_LOG_FILE} | grep "Runtime:" | cut -d' ' -f '2' >> ${TEST_LOG_FILE}
-        cat ${KEYSTONE_LOG_FILE} | grep "Runtime:" | cut -d' ' -f '2' >> ${KTEST_LOG_FILE}
-
+        if [[ $RUN_BASELINE == 1 ]]; then
+            cat ${BASE_LOG_FILE} | grep "Runtime:" | cut -d' ' -f '2' >> ${TEST_LOG_FILE}
+        fi
+        if [[ $RUN_KEYSTONE == 1 ]]; then
+            cat ${KEYSTONE_LOG_FILE} | grep "Runtime:" | cut -d' ' -f '2' >> ${KTEST_LOG_FILE}
+        fi
     done;
 
     echo ${tst} >> ${TEST_LOG_DIR}/TESTLIST
